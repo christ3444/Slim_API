@@ -1,5 +1,11 @@
     <?php
-
+    $app->add(function ($req, $res, $next) {
+        $response = $next($req, $res);
+        return $response
+                ->withHeader('Access-Control-Allow-Origin', 'http://localhost')
+                ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    });
     /*/////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
                                 Users
@@ -9,8 +15,17 @@
     $app->get('/users', function ($request, $response, $args) {
          $sth = $this->db->prepare("SELECT * FROM users");
         $sth->execute();
-        $users = $sth->fetchAll();
+        $users = array();
+       // $users = $sth->setFetchMode(PDO::FETCH_ASSOC);
+        //$users = $sth->fetchAll();
+       // while ($row = $sth->fetch()) {
+           //$users['users']=$row;
+        //}
+       // $users=json_encode($users);
+        //echo json_encode($users);
+        $users['users'] = $sth->fetchAll();
         return $this->response->withJson($users);
+
     });
 
 
@@ -21,7 +36,7 @@
          OR first_name LIKE '%$query%' 
          OR email LIKE '%$query%'
           ");
-        $sth->execute();
+        $sth->execute(); 
         $users = $sth->fetchAll();
         //echo $query;
         return $this->response->withJson($users);
@@ -31,7 +46,7 @@
     $app->post('/add_user', function ($request, $response) {
         $input = $request->getParsedBody();
         $sql = "INSERT INTO users (username,first_name,email,last_name) VALUES (:username,:first_name,:email,:last_name)";
-         $sth = $this->db->prepare($sql);
+        $sth = $this->db->prepare($sql);
         $sth->bindParam("username", $input['username']); 
         $sth->bindParam("email", $input['email']); 
         $sth->bindParam("last_name", $input['last_name']); 
