@@ -12,22 +12,30 @@
     \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     */
+
+
     $app->get('/users', function ($request, $response, $args) {
          $sth = $this->db->prepare("SELECT * FROM users");
         $sth->execute();
-        $users = array();
+
+        $users['users']= $sth->fetchall();
+        return $this->response->withJson($users);
+    });
+
+
+
+     //return json_encode($users);
+  // $users = "";
        // $users = $sth->setFetchMode(PDO::FETCH_ASSOC);
-        //$users = $sth->fetchAll();
-       // while ($row = $sth->fetch()) {
-           //$users['users']=$row;
+       
+        //while ($row = $sth->fetch()) {
+            //$s='{'.$row.'}';
+         //   $users['users']=$row;
+           //$users=$row;
         //}
        // $users=json_encode($users);
         //echo json_encode($users);
-        $users['users'] = $sth->fetchAll();
-        return $this->response->withJson($users);
-
-    });
-
+       // $users['users']= $sth->fetchAll();
 
     $app->get('/users_search/{query}', function ($request, $response, $query) {
         $route = $request->getAttribute('route');
@@ -37,8 +45,7 @@
          OR email LIKE '%$query%'
           ");
         $sth->execute(); 
-        $users = $sth->fetchAll();
-        //echo $query;
+        $users['users']= $sth->fetchall();
         return $this->response->withJson($users);
     });
 
@@ -70,7 +77,7 @@
     });
 
 
-    $app->put('/update_user/[{id}]', function ($request, $response, $id) {
+    $app->put('/update_user/{id}', function ($request, $response, $id) {
         $route = $request->getAttribute('route');
         $id= $route->getArgument('id');
         $input = $request->getParsedBody();
@@ -95,8 +102,8 @@
     $app->get('/locataires', function ($request, $response, $args) {
         $sth = $this->db->prepare("SELECT * FROM Locataire");
        $sth->execute();
-       $loca = $sth->fetchAll();
-       return $this->response->withJson($loca);
+       $loca['loca']= $sth->fetchall();
+        return $this->response->withJson($loca);
     });
 
 
@@ -107,9 +114,8 @@
          OR emailLocataire LIKE '%$query%'
           ");
         $sth->execute();
-        $users = $sth->fetchAll();
-        //echo $query;
-        return $this->response->withJson($users);
+        $loca['loca']= $sth->fetchall();
+        return $this->response->withJson($loca);
     });
 
 
@@ -122,9 +128,7 @@
         $sth->bindParam("emailLocataire", $input['emailLocataire']); 
     
         $sth->execute();
-       // $input['id'] = $this->db->lastInsertId();
-            echo "reussi";
-        //return $this->response->withJson($input);
+        return $this->response->withJson("reussi");
     });
 
 
@@ -133,10 +137,9 @@
         $route = $request->getAttribute('route');
         $id= $route->getArgument('id');
          $sth = $this->db->prepare("DELETE FROM Locataire WHERE idLocataire=$id");
-        $sth->execute();
-       // $user = $sth->fetchAll();
-             return 1;
-        //$this->response->withJson($user);
+       
+         $sth->execute();
+             return $this->response->withJson("success");
     });
 
 
@@ -149,8 +152,8 @@
         $sth->bindParam("telLocataire", $input['telLocataire']); 
         $sth->bindParam("emailLocataire", $input['emailLocataire']); 
         $sth->execute();
-        echo "reussi";
-        //return $this->response->withJson($input);
+       
+        return $this->response->withJson("reussi");
     });
 
 
@@ -165,7 +168,7 @@
     $app->get('/contrat', function ($request, $response, $args) {
         $sth = $this->db->prepare("SELECT * FROM contratlocation ");
        $sth->execute();
-       $contrats = $sth->fetchAll();
+       $contrats['contrats'] = $sth->fetchAll();
        return $this->response->withJson($contrats);
     });
 
@@ -177,8 +180,7 @@
          OR titreContrat LIKE '%$query%'
           ");
         $sth->execute();
-        $contrats = $sth->fetchAll();
-        //echo $query;
+        $contrats['contrats'] = $sth->fetchAll();
         return $this->response->withJson($contrats);
     });
 
@@ -186,22 +188,22 @@
     $app->post('/add_contrat', function ($request, $response) {
         $input = $request->getParsedBody();
         $sql = "INSERT INTO   contratlocation (idMaison,idLocataire,codeContrat,titreContrat,termesContrat,debutContrat,finContrat,caution,avance) 
-        VALUES (:idMaison,:idLocataire,:codeContrat,:titreContrat,:termesContrat,:debutContrat,:finContrat,:caution,:avance)";
+        VALUES (2,2,'code85Sw4',:titreContrat,:termesContrat,:debutContrat,:finContrat,:caution,:avance)";
          $sth = $this->db->prepare($sql);
-        $sth->bindParam("idMaison", $input['idMaison']); 
-        $sth->bindParam("idLocataire", $input['idLocataire']); 
-        $sth->bindParam("codeContrat", $input['codeContrat']); 
+        //$sth->bindParam("idMaison", $input['idMaison']); 
+        //$sth->bindParam("idLocataire", $input['idLocataire']); 
+        //$sth->bindParam("codeContrat", $input['codeContrat']); 
         $sth->bindParam("titreContrat", $input['titreContrat']); 
         $sth->bindParam("termesContrat", $input['termesContrat']); 
         $sth->bindParam("debutContrat", $input['debutContrat']); 
         $sth->bindParam("finContrat", $input['finContrat']); 
-        $sth->bindParam("caution", $input['cautionContrat']); 
+        $sth->bindParam("caution", $input['caution']); 
         $sth->bindParam("avance" , $input['avance']); 
 
         $sth->execute();
        // $input['id'] = $this->db->lastInsertId();
-            echo "reussi";
-        //return $this->response->withJson($input);
+           // echo "reussi";
+        return $this->response->withJson("reussi");
     });
 
 
@@ -212,8 +214,8 @@
          $sth = $this->db->prepare("DELETE FROM contratLocation WHERE idContrat=$id");
         $sth->execute();
        // $user = $sth->fetchAll();
-             return 1;
-        //$this->response->withJson($user);
+
+             return $this->response->withJson("reussi");
     });
 
 
@@ -228,9 +230,9 @@
         WHERE idContrat=:id";
     
          $sth = $this->db->prepare($sql);
-        $sth->bindParam("idMaison", $input['idMaison']); 
-        $sth->bindParam("idLocataire", $input['idLocataire']); 
-        $sth->bindParam("codeContrat", $input['codeContrat']); 
+       // $sth->bindParam("idMaison", $input['idMaison']); 
+        //$sth->bindParam("idLocataire", $input['idLocataire']); 
+        //$sth->bindParam("codeContrat", $input['codeContrat']); 
         $sth->bindParam("titreContrat", $input['titreContrat']); 
         $sth->bindParam("termesContrat", $input['termesContrat']); 
         $sth->bindParam("debutContrat", $input['debutContrat']); 
@@ -254,8 +256,8 @@
     $app->get('/maison', function ($request, $response, $args) {
         $sth = $this->db->prepare("SELECT * FROM maison ");
        $sth->execute();
-       $contrats = $sth->fetchAll();
-       return $this->response->withJson($contrats);
+       $maison['maison'] = $sth->fetchAll();
+       return $this->response->withJson($maison);
     });
 
 
@@ -268,17 +270,17 @@
          OR ville LIKE '%$query%'
           ");
         $sth->execute();
-        $contrats = $sth->fetchAll();
-        //echo $query;
-        return $this->response->withJson($contrats);
+        $maison['maison'] = $sth->fetchAll();
+       return $this->response->withJson($maison);
     });
 
 
     $app->post('/add_maison', function ($request, $response) {
         $input = $request->getParsedBody();
-        $sql = "INSERT INTO   maison (codeMaison,nomMaison,quartier,vile) 
-        VALUES (:codeMaison,:nomMaison,:quartier,:ville)";
+        $sql = "INSERT INTO   maison (idProp ,codeMaison,nomMaison,quartier,ville) 
+        VALUES (2,:codeMaison,:nomMaison,:quartier,:ville)";
          $sth = $this->db->prepare($sql);
+         //$sth->bindParam("idProp",2);
         $sth->bindParam("codeMaison", $input['codeMaison']); 
         $sth->bindParam("nomMaison", $input['nomMaison']); 
         $sth->bindParam("quartier", $input['quartier']); 
@@ -286,8 +288,8 @@
 
         $sth->execute();
        // $input['id'] = $this->db->lastInsertId();
-            echo "reussi";
-        //return $this->response->withJson($input);
+            //echo "reussi";
+        return $this->response->withJson("reussi");
     });
 
 
@@ -333,7 +335,7 @@
     $app->get('/proprietaires', function ($request, $response, $args) {
         $sth = $this->db->prepare("SELECT * FROM proprietaire");
        $sth->execute();
-       $proprietaires = $sth->fetchAll();
+       $proprietaires['proprietaire'] = $sth->fetchAll();
        return $this->response->withJson($proprietaires);
     });
 
@@ -346,10 +348,10 @@
         OR adresseProp LIKE '%$query%'
          ");
        $sth->execute();
-       $users = $sth->fetchAll();
-       //echo $query;
-       return $this->response->withJson($users);
+       $proprietaires['proprietaire'] = $sth->fetchAll();
+       return $this->response->withJson($proprietaires);
     });
+
 
 
     $app->post('/add_prop', function ($request, $response) {
@@ -380,7 +382,7 @@
     });
 
 
-    $app->put('/update_prop/[{id}]', function ($request, $response, $id) {
+    $app->put('/update_prop/{id}', function ($request, $response, $id) {
        $route = $request->getAttribute('route');
        $id= $route->getArgument('id');
        $input = $request->getParsedBody();
@@ -390,7 +392,7 @@
        $sth->bindParam("fisrt_name", $input['first_name']);
        $sth->execute();
        //$input['id'] = $args['id'];
-       return $this->response->withJson($input);
+       return $this->response->withJson("reussi");
     });
 
 
@@ -407,7 +409,7 @@
     $app->get('/reglement', function ($request, $response, $args) {
         $sth = $this->db->prepare("SELECT * FROM reglementloyer");
        $sth->execute();
-       $reglements = $sth->fetchAll();
+       $reglements['reglements'] = $sth->fetchAll();
        return $this->response->withJson($reglements);
     });
 
@@ -421,17 +423,16 @@
         OR montantReg LIKE '%$query%'
          ");
        $sth->execute();
-       $reglements = $sth->fetchAll();
-       //echo $query;
+       $reglements['reglements'] = $sth->fetchAll();
        return $this->response->withJson($reglements);
     });
 
 
     $app->post('/add_reg', function ($request, $response) {
        $input = $request->getParsedBody();
-       $sql = "INSERT INTO reglementloyer (idContrat,dateReg,montantReg) VALUES (:idContrat,:dateReg,:montantReg)";
+       $sql = "INSERT INTO reglementloyer (idContrat,dateReg,montantReg) VALUES (1,:dateReg,:montantReg)";
         $sth = $this->db->prepare($sql);
-       $sth->bindParam("idContrat", $input['idContrat']); 
+       //$sth->bindParam("idContrat", $input['idContrat']); 
        $sth->bindParam("dateReg", $input['dateReg']); 
        $sth->bindParam("montantReg", $input['montantReg']); 
        $sth->execute();
@@ -453,7 +454,7 @@
     });
 
 
-    $app->put('/update_reg/[{id}]', function ($request, $response, $id) {
+    $app->put('/update_reg/{id}', function ($request, $response, $id) {
        $route = $request->getAttribute('route');
        $id= $route->getArgument('id');
        $input = $request->getParsedBody();
@@ -464,5 +465,5 @@
        $sth->bindParam("montantReg", $input['montantReg']); 
        $sth->execute();
        //$input['id'] = $args['id'];
-       return $this->response->withJson($input);
+       return $this->response->withJson("reussi");
     });
