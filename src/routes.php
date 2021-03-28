@@ -1,4 +1,5 @@
     <?php
+
     $app->add(function ($req, $res, $next) {
         $response = $next($req, $res);
         return $response
@@ -6,6 +7,7 @@
                 ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
                 ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     });
+
     /*/////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
                                 Users
@@ -21,21 +23,6 @@
         $users['users']= $sth->fetchall();
         return $this->response->withJson($users);
     });
-
-
-
-     //return json_encode($users);
-  // $users = "";
-       // $users = $sth->setFetchMode(PDO::FETCH_ASSOC);
-       
-        //while ($row = $sth->fetch()) {
-            //$s='{'.$row.'}';
-         //   $users['users']=$row;
-           //$users=$row;
-        //}
-       // $users=json_encode($users);
-        //echo json_encode($users);
-       // $users['users']= $sth->fetchAll();
 
     $app->get('/users_search/{query}', function ($request, $response, $query) {
         $route = $request->getAttribute('route');
@@ -59,9 +46,9 @@
         $sth->bindParam("last_name", $input['last_name']); 
         $sth->bindParam("first_name", $input['first_name']); 
         $sth->execute();
-        //$input['id'] = $this->db->lastInsertId();
+       
         echo "reussi";
-        //return $this->response->withJson($input);
+       
     });
         
 
@@ -71,9 +58,9 @@
         $id= $route->getArgument('id');
          $sth = $this->db->prepare("DELETE FROM users WHERE id=$id");
         $sth->execute();
-       // $user = $sth->fetchAll();
+     
         return 1;
-        //$this->response->withJson($user);
+     
     });
 
 
@@ -86,7 +73,7 @@
         $sth->bindParam("id", $args['id']);
         $sth->bindParam("fisrt_name", $input['first_name']);
         $sth->execute();
-       // $input['id'] = $args['id'];
+     
         return $this->response->withJson($input);
     });
 
@@ -201,8 +188,7 @@
         $sth->bindParam("avance" , $input['avance']); 
 
         $sth->execute();
-       // $input['id'] = $this->db->lastInsertId();
-           // echo "reussi";
+       
         return $this->response->withJson("reussi");
     });
 
@@ -213,7 +199,6 @@
         $id= $route->getArgument('id');
          $sth = $this->db->prepare("DELETE FROM contratLocation WHERE idContrat=$id");
         $sth->execute();
-       // $user = $sth->fetchAll();
 
              return $this->response->withJson("reussi");
     });
@@ -299,9 +284,9 @@
         $id= $route->getArgument('id');
          $sth = $this->db->prepare("DELETE FROM maison WHERE idMaison=$id");
         $sth->execute();
-       // $user = $sth->fetchAll();
-             return 1;
-        //$this->response->withJson($user);
+      
+      return $this->response->withJson("reussi");
+        
     });
 
 
@@ -322,7 +307,7 @@
          $sth->bindParam("quartier", $input['quartier']); 
          $sth->bindParam("ville", $input['ville']); 
         echo "reussi";
-        //return $this->response->withJson($input);
+        
     });
 
 
@@ -364,9 +349,8 @@
        $sth->bindParam("emailProp", $input['emailProp']); 
        $sth->bindParam("adresseProp", $input['adresseProp']); 
        $sth->execute();
-      // $input['id'] = $this->db->lastInsertId();
-       echo "reussi";
-       //return $this->response->withJson($input);
+      
+       return $this->response->withJson("reussi");
     });
     
 
